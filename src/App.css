@@ -34,3 +34,12 @@
 .details-container {
     margin-top: 30px;
 }
+
+.qr{
+    float: none;
+    margin: 0 auto;
+}
+
+#signedtxtextarea{
+    height: 160px;
+}

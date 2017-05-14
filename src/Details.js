@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Col, ControlLabel, FormControl, Button, FormGroup, Label} from 'react-bootstrap';
-import helpers from './nem-helper'
+import {Col, ControlLabel, FormControl, Button, FormGroup, Label, Modal} from 'react-bootstrap';
+import helpers from './nem-helper';
+import QRCode from 'qrcode.react';
 
 
 class Details extends Component {
@@ -13,7 +14,9 @@ class Details extends Component {
             nemPrvKey: "",
             nemMessage: "",
             nemFee: 0,
-            signedTransaction: ""
+            signedTransaction: "",
+            showModal: false
+
         };
     }
     handleInputChange(e){
@@ -30,7 +33,6 @@ class Details extends Component {
     updateFee() {
         
         var feeString = helpers.updateFee(this.state);
-        
         //Update view with the fee
         this.setState({
             nemFee: feeString
@@ -39,11 +41,24 @@ class Details extends Component {
     signTransaction(event) {
         event.preventDefault();
         
-        var result = helpers.updateFee(this.state);
+        var result = helpers.signTransaction(this.state);
         
         //Update view with the transaction
         this.setState({
             signedTransaction: JSON.stringify(result)
+        });
+    }
+    openModal(){
+        var result = helpers.signTransaction(this.state);
+  
+        this.setState({
+            signedTransaction: JSON.stringify(result),
+            showModal: true
+        });
+    }
+    closeModal(){
+        this.setState({
+            showModal: false
         });
     }
     render() {
@@ -69,7 +84,7 @@ class Details extends Component {
 
                         <h3>Fee <Label>{this.state.nemFee} XEM</Label></h3> 
 
-                        <Button type="submit" bsStyle="success">
+                        <Button bsStyle="success" onClick={this.openModal.bind(this)}>
                             Sign transaction
                         </Button>
 
@@ -79,6 +94,26 @@ class Details extends Component {
                         </FormGroup>
                     </form>
                 </Col>
+
+                <Modal show={this.state.showModal} onHide={this.close}>
+                    <Modal.Header>
+                        <Modal.Title>SIGNED TRANSACTION</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <div className="qr">
+                            <QRCode value={this.state.signedTransaction} size='200' level="M" />                            
+                        </div>
+                        <FormGroup controlId="signedtxtextarea">
+                            <ControlLabel>Signed transaction</ControlLabel>
+                            <FormControl componentClass="textarea" value={this.state.signedTransaction}/>
+                        </FormGroup>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button onClick={this.closeModal.bind(this)}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "nem-sdk": "^1.1.2",
+    "qrcode.react": "^0.7.1",
     "react": "^15.5.4",
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.5.4"

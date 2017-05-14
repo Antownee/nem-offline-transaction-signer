@@ -1,1 +1,1 @@
-NEm Offline transaction signer
+NEM Offline transaction signer
