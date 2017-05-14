@@ -50,21 +50,35 @@ let nemhelper = {
         var message = state.nemMessage;
 
         // Check form for errors
-        if (!prv || !address) 
-            return alert('Missing parameter! Enter private key and address');
-        if (undefined === amount || !nem.utils.helpers.isTextAmountValid(amount)) 
-            return alert('Invalid amount !');
-        if (!nem.model.address.isValid(address)) 
-            return alert('Invalid recipent address !');
-        
+        if (!prv || !address) {
+            alert('Missing parameter! Enter private key and address');
+            return false;
+        }
+
+        if (undefined === amount || !nem.utils.helpers.isTextAmountValid(amount)) {
+            alert('Invalid amount !');
+            return false;
+        }
+
+        if (!nem.model.address.isValid(address)) {
+            alert('Invalid recipent address !');
+            return false;
+        }
+
         // Set the private key in common object
         common.privateKey = prv;
 
         // Check private key for errors
-        if (common.privateKey.length !== 64 && common.privateKey.length !== 66) 
-            return alert('Invalid private key, length must be 64 or 66 characters !');
-        if (!nem.utils.helpers.isHexadecimal(common.privateKey)) 
-            return alert('Private key must be hexadecimal only !');
+        if (common.privateKey.length !== 64 && common.privateKey.length !== 66) {
+            alert('Invalid private key, length must be 64 or 66 characters !');
+            return false;
+        }
+            
+        if (!nem.utils.helpers.isHexadecimal(common.privateKey)) {
+            alert('Private key must be hexadecimal only !');
+            return false;
+        }
+            
         
         // Set the cleaned amount into transfer transaction object
         transferTransaction.amount = nem

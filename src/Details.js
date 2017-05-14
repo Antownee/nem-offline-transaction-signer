@@ -38,18 +38,15 @@ class Details extends Component {
             nemFee: feeString
         });
 	}
-    signTransaction(event) {
-        event.preventDefault();
-        
-        var result = helpers.signTransaction(this.state);
-        
-        //Update view with the transaction
-        this.setState({
-            signedTransaction: JSON.stringify(result)
-        });
-    }
     openModal(){
         var result = helpers.signTransaction(this.state);
+
+        if(result === false){
+            this.setState({
+                showModal: false
+            });
+            return;
+        }
   
         this.setState({
             signedTransaction: JSON.stringify(result),
@@ -65,7 +62,7 @@ class Details extends Component {
         return (
             <div className="details-container">
                 <Col xs={6} md={6} className="form-container">
-                    <form onSubmit={this.signTransaction.bind(this)}>
+                    <form>
                         <FormGroup>
                             <ControlLabel>Recepient address</ControlLabel>
                             <FormControl name="nemAddress" onChange={this.handleInputChange.bind(this)} type="text"/>
@@ -88,10 +85,6 @@ class Details extends Component {
                             Sign transaction
                         </Button>
 
-                        <FormGroup controlId="formControlsTextarea">
-                            <ControlLabel>Signed transaction</ControlLabel>
-                            <FormControl componentClass="textarea" value={this.state.signedTransaction}/>
-                        </FormGroup>
                     </form>
                 </Col>
 
@@ -102,7 +95,7 @@ class Details extends Component {
 
                     <Modal.Body>
                         <div className="qr">
-                            <QRCode value={this.state.signedTransaction} size='200' level="M" />                            
+                            <QRCode value={this.state.signedTransaction} size={200} level="M" />                            
                         </div>
                         <FormGroup controlId="signedtxtextarea">
                             <ControlLabel>Signed transaction</ControlLabel>
