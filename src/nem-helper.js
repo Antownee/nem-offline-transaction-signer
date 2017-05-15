@@ -1,24 +1,21 @@
-import util from 'util';
 import nem from 'nem-sdk';
 
-var transferTransaction = nem
-    .model
-    .objects
-    .get("transferTransaction"); // Get an empty un-prepared transfer transaction object
-var common = nem
-    .model
-    .objects
-    .get("common"); // Get an empty common object to hold pass and key
+var transferTransaction = nem.model.objects.get("transferTransaction"); // Get an empty un-prepared transfer transaction object
+var common = nem.model.objects.get("common"); // Get an empty common object to hold pass and key
 
 let nemhelper = {
+
+    isValidAddress: (address) => {
+        return nem.model.address.isValid(address);
+    },
 
     updateFee: (state) => {
         var amount = state.nemAmount;
         var message = state.nemMessage;
         // Check for amount errors
-        if (undefined === amount || !nem.utils.helpers.isTextAmountValid(amount)) 
+        if (undefined === amount || !nem.utils.helpers.isTextAmountValid(amount))
             return alert('Invalid amount !');
-        
+
         // Set the cleaned amount into transfer transaction object
         transferTransaction.amount = nem
             .utils
@@ -35,11 +32,13 @@ let nemhelper = {
             .prepare("transferTransaction")(common, transferTransaction, nem.model.network.data.testnet.id);
 
         // Format fee returned in prepared object
-        var feeString = parseInt(nem.utils.format.nemValue(transactionEntity.fee)[0].replace(/\s+/g, "")) + "." + nem
+        var feeString = parseInt(nem.utils.format.nemValue(transactionEntity.fee)[0].replace(/\s+/g, ""), 10) + "." + nem
             .utils
             .format
             .nemValue(transactionEntity.fee)[1];
-        return Math.round(parseInt(feeString));
+
+        var finalFee = parseInt(feeString, 10)
+        return Math.round(finalFee);
     },
 
     signTransaction: (state) => {
@@ -73,13 +72,13 @@ let nemhelper = {
             alert('Invalid private key, length must be 64 or 66 characters !');
             return false;
         }
-            
+
         if (!nem.utils.helpers.isHexadecimal(common.privateKey)) {
             alert('Private key must be hexadecimal only !');
             return false;
         }
-            
-        
+
+
         // Set the cleaned amount into transfer transaction object
         transferTransaction.amount = nem
             .utils
